@@ -10,14 +10,6 @@ export function getHuffmanTree(charactersInformation) {
     return huffmanTreeArray[0];
 }
 
-export function getCharMappingFromHuffmanTree(huffmanTree) {
-    const mapping = new Map();
-
-    addCharacterToMap(mapping, huffmanTree);
-
-    return mapping;
-}
-
 function parseLastTwoElements(huffmanArray) {
     if (huffmanArray.length >= 2) {
         const leftSideChar = huffmanArray.pop();
@@ -53,19 +45,6 @@ function updateHuffmanCode(characterInformation, newHuffmanCode) {
 
     if (characterInformation.right) {
         updateHuffmanCode(characterInformation.right, `${newHuffmanCode}1`);
-    }
-}
-
-function addCharacterToMap(mapping, element) {
-    if (element.character) {
-        mapping.set(element.character, element.huffmanCode);
-    } else {
-        if (element.left) {
-            addCharacterToMap(mapping, element.left);
-        }
-        if (element.right) {
-            addCharacterToMap(mapping, element.right);
-        }
     }
 }
 
