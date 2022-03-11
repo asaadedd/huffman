@@ -1,4 +1,4 @@
-export function getBase64(file) {
+export function getTextFromFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsText(file);
