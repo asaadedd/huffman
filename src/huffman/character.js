@@ -44,6 +44,34 @@ export function getTextInHuffmanCode(text, mapping) {
 
 }
 
+export function getBinaryCodeForChar(char) {
+    let binary = char.charCodeAt(0).toString(2);
+    while (binary.length < 16) {
+        binary = `0${binary}`;
+    }
+    return binary;
+}
+
+export function getCharForBinaryCode(binaryCode) {
+    return String.fromCharCode(parseInt(binaryCode, 2));
+}
+
+export function popLastCharacter(text) {
+    const char = text[text.length - 1];
+
+    text = text.slice(0, -1);
+
+    return char;
+}
+
+export function popLastNCharacter(text, numberOfChar) {
+    const char = text[text.length - numberOfChar];
+
+    text = text.slice(0, -numberOfChar);
+
+    return char;
+}
+
 function addCharacterToMap(mapping, element) {
     if (element.character) {
         mapping.set(element.character, element.huffmanCode);
@@ -55,10 +83,6 @@ function addCharacterToMap(mapping, element) {
             addCharacterToMap(mapping, element.right);
         }
     }
-}
-
-function getBinaryCodeForChar(char) {
-    return char.charCodeAt(0).toString(2);
 }
 
 function sortByCharacterCountAsc(firstChar, secondChar) {

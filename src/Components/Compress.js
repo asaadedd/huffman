@@ -1,7 +1,7 @@
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import {getTextFromFile} from "../huffman/file";
-import {getHuffmanTree} from "../huffman/tree";
+import {decodeHuffmanTree, encodeHuffmanTree, getHuffmanTree} from "../huffman/tree";
 import {
     getCharactersInformationFromText,
     getCharMappingFromHuffmanTree,
@@ -25,14 +25,17 @@ function Compress() {
             const huffmanTree = getHuffmanTree(charactersInformation);
             const charactersMapping = getCharMappingFromHuffmanTree(huffmanTree);
             const textInBinary = getTextInBinary(text);
-            const textInHuffman = getTextInHuffmanCode(text, charactersMapping);
+            const textInHuffman = encodeHuffmanTree(huffmanTree) + getTextInHuffmanCode(text, charactersMapping);
+
+            console.log(111, huffmanTree);
+            console.log(222, encodeHuffmanTree(huffmanTree).length);
 
             setBinaryText({
                 bitNumber: textInBinary.length,
                 text: textInBinary
             });
             setHuffmanCodeText({
-                bitNumber: textInHuffman.length,
+                bitNumber: textInHuffman.length + encodeHuffmanTree(huffmanTree).length,
                 text: textInHuffman
             });
         }

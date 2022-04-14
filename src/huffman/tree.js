@@ -1,5 +1,6 @@
+import {getBinaryCodeForChar, getCharForBinaryCode} from "./character";
+
 export function getHuffmanTree(charactersInformation) {
-    // slice(0) is used to make a copy of the charactersInformation array so that we don't overwrite it
     const huffmanTreeElementsArray = charactersInformation.slice(0);
     const huffmanTreeArray = parseLastTwoElements(huffmanTreeElementsArray);
 
@@ -8,6 +9,42 @@ export function getHuffmanTree(charactersInformation) {
     }
 
     return huffmanTreeArray[0];
+}
+
+export function encodeHuffmanTree(huffmanTree) {
+    const isLeafNode = !!huffmanTree.character;
+    if (isLeafNode) {
+        return `0${getBinaryCodeForChar(huffmanTree.character)}`;
+    } else {
+        return `1${encodeHuffmanTree(huffmanTree.left)}${encodeHuffmanTree(huffmanTree.right)}`;
+    }
+}
+
+export function decodeHuffmanTree(encodeDef, lastHuffmanCode) {
+    const encodedHuffmanTree = encodeDef.code;
+    const currentChar = encodedHuffmanTree[0];
+
+    encodeDef.code = encodedHuffmanTree.slice(1);
+
+    if (currentChar === '0') {
+        const characterInBinary = encodeDef.code.slice(0, 16);
+        encodeDef.code = encodeDef.code.slice(16);
+
+        return {
+            character: getCharForBinaryCode(characterInBinary),
+            binaryCode: characterInBinary,
+            huffmanCode: lastHuffmanCode
+        };
+    } else if (currentChar === '1') {
+        const left = decodeHuffmanTree(encodeDef, `${lastHuffmanCode || ''}0`);
+        const right = decodeHuffmanTree(encodeDef, `${lastHuffmanCode || ''}1`);
+        return {
+            character: '',
+            left,
+            right,
+            huffmanCode: lastHuffmanCode
+        };
+    }
 }
 
 function parseLastTwoElements(huffmanArray) {
