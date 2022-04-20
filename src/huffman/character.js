@@ -1,35 +1,4 @@
-export function getCharMappingFromHuffmanTree(huffmanTree) {
-    const mapping = new Map();
-
-    addCharacterToMap(mapping, huffmanTree);
-
-    return mapping;
-}
-
-export function getCharactersInformationFromText(textFile) {
-    const characters = textFile.split('');
-    const characterMapping = new Map();
-
-    characters.forEach((char) => {
-        if (characterMapping.has(char)) {
-            const currentCharacterInformation = characterMapping.get(char);
-            characterMapping.set(char, {
-                ...currentCharacterInformation,
-                count: currentCharacterInformation.count + 1
-            });
-        } else {
-            characterMapping.set(char, {
-                character: char,
-                count: 1,
-                binaryCode: getBinaryCodeForChar(char)
-            });
-        }
-    });
-
-    const characterMappingArray = Array.from(characterMapping.values());
-
-    return characterMappingArray.sort(sortByCharacterCountAsc);
-}
+import {getCharacterFromHuffmanTree} from "./tree";
 
 export function getTextInBinary(text) {
     const characters = text.split('');
@@ -37,11 +6,38 @@ export function getTextInBinary(text) {
     return characters.map((char) => getBinaryCodeForChar(char)).join('');
 }
 
+export function getTextFromBinary(binary) {
+    let remainingBinaryText = binary.slice(16);
+    let currentChar = getCharForBinaryCode(binary.slice(0, 16));
+    let text = currentChar;
+
+    while (remainingBinaryText.length) {
+        currentChar = getCharForBinaryCode(remainingBinaryText.slice(0, 16));
+        text = text + currentChar;
+        remainingBinaryText = remainingBinaryText.slice(16);
+    }
+
+    return text;
+}
+
 export function getTextInHuffmanCode(text, mapping) {
     const characters = text.split('');
 
     return characters.map((char) => mapping.get(char)).join('');
+}
 
+export function getTextFromHuffmanCode(text, huffmanTree, mapping) {
+    let char = getCharacterFromHuffmanTree(text, huffmanTree);
+    let remainingText = text.slice(mapping.get(char));
+    let decodedText = char;
+
+    while(remainingText.length) {
+        char = getCharacterFromHuffmanTree(remainingText, huffmanTree);
+        remainingText = remainingText.slice(mapping.get(char));
+        decodedText = decodedText + char;
+    }
+
+    return decodedText;
 }
 
 export function getBinaryCodeForChar(char) {
@@ -52,40 +48,23 @@ export function getBinaryCodeForChar(char) {
     return binary;
 }
 
+export function get32BitsBinaryFromInt(number) {
+    let binary = number.toString(2);
+    while (binary.length < 32) {
+        binary = `0${binary}`;
+    }
+    return binary;
+}
+
+export function getIntFrom32BitsBinary(binary) {
+    return parseInt(binary, 2);
+}
+
 export function getCharForBinaryCode(binaryCode) {
     return String.fromCharCode(parseInt(binaryCode, 2));
 }
 
-export function popLastCharacter(text) {
-    const char = text[text.length - 1];
-
-    text = text.slice(0, -1);
-
-    return char;
-}
-
-export function popLastNCharacter(text, numberOfChar) {
-    const char = text[text.length - numberOfChar];
-
-    text = text.slice(0, -numberOfChar);
-
-    return char;
-}
-
-function addCharacterToMap(mapping, element) {
-    if (element.character) {
-        mapping.set(element.character, element.huffmanCode);
-    } else {
-        if (element.left) {
-            addCharacterToMap(mapping, element.left);
-        }
-        if (element.right) {
-            addCharacterToMap(mapping, element.right);
-        }
-    }
-}
-
-function sortByCharacterCountAsc(firstChar, secondChar) {
+export function sortByCharacterCountAsc(firstChar, secondChar) {
     return firstChar.count - secondChar.count;
 }
 

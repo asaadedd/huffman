@@ -1,42 +1,31 @@
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import {getTextFromFile} from "../huffman/file";
-import {decodeHuffmanTree, encodeHuffmanTree, getHuffmanTree} from "../huffman/tree";
-import {
-    getCharactersInformationFromText,
-    getCharMappingFromHuffmanTree,
-    getTextInBinary,
-    getTextInHuffmanCode
-} from "../huffman/character";
+import {getTextFromFile, saveFile} from "../huffman/file";
+import {getTextFromBinary, getTextInBinary} from "../huffman/character";
 import {useState} from "react";
 import ShowMoreText from "react-show-more-text";
-
+import {compressText} from "../huffman/compress";
 
 function Compress() {
     const [binaryText, setBinaryText] = useState(null);
     const [huffmanCodeText, setHuffmanCodeText] = useState(null);
-    const {register, formState: { errors }, handleSubmit, reset} = useForm();
+    const {register, formState: { errors }, handleSubmit} = useForm();
 
     const onSubmit = async (formValue) => {
         if (formValue.file?.[0]) {
             const file = formValue.file?.[0];
             const text = await getTextFromFile(file);
-            const charactersInformation = getCharactersInformationFromText(text);
-            const huffmanTree = getHuffmanTree(charactersInformation);
-            const charactersMapping = getCharMappingFromHuffmanTree(huffmanTree);
             const textInBinary = getTextInBinary(text);
-            const textInHuffman = encodeHuffmanTree(huffmanTree) + getTextInHuffmanCode(text, charactersMapping);
-
-            console.log(111, huffmanTree);
-            console.log(222, encodeHuffmanTree(huffmanTree).length);
+            const textCompressed = compressText(text);
+            saveFile(`${file.name.split('.')[0]}_encoded`, getTextFromBinary(textCompressed));
 
             setBinaryText({
                 bitNumber: textInBinary.length,
                 text: textInBinary
             });
             setHuffmanCodeText({
-                bitNumber: textInHuffman.length + encodeHuffmanTree(huffmanTree).length,
-                text: textInHuffman
+                bitNumber: textCompressed.length,
+                text: textCompressed
             });
         }
     };

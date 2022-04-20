@@ -11,6 +11,24 @@ export function getHuffmanTree(charactersInformation) {
     return huffmanTreeArray[0];
 }
 
+export function getCharacterFromHuffmanTree(text, tree) {
+    let currentChar = text[0];
+    let remainingText = text.slice(1);
+    let currentTreeNode = tree;
+
+    while (!currentTreeNode.character) {
+        if (currentChar === '0') {
+            currentTreeNode = currentTreeNode.left;
+        } else {
+            currentTreeNode = currentTreeNode.right;
+        }
+        currentChar = remainingText[0];
+        remainingText = remainingText.slice(1);
+    }
+
+    return currentTreeNode.character;
+}
+
 export function encodeHuffmanTree(huffmanTree) {
     const isLeafNode = !!huffmanTree.character;
     if (isLeafNode) {

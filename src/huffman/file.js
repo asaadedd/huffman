@@ -6,3 +6,10 @@ export function getTextFromFile(file) {
         reader.onerror = error => reject(error);
     });
 }
+
+export function saveFile(name, file) {
+    const aElement = document.createElement('a');
+    aElement.href = window.URL.createObjectURL(new Blob([file], { type: 'text/plain' }));
+    aElement.download = `${name}.txt`;
+    aElement.click();
+}
