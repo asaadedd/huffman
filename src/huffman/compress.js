@@ -12,7 +12,6 @@ export function compressText(text) {
     const textInHuffman = getTextInHuffmanCode(text, charactersMapping);
     const encodedTree = encodeHuffmanTree(huffmanTree);
     const numberOfTree = get32BitsBinaryFromInt(encodedTree.length);
-    console.log(999, encodedTree.length);
 
     return numberOfTree + encodedTree + textInHuffman;
 }
